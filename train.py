@@ -1,14 +1,15 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 import pandas as pd
 
 class SimpleANN(nn.Module):
     def __init__(self):
         super(SimpleANN, self).__init__()
-        self.fc1 = nn.Linear(8, 16)  # 8 features, 16 neurons in first hidden layer
-        self.fc2 = nn.Linear(16, 16) # 16 neurons in second hidden layer
-        self.output = nn.Linear(16, 1) # Output layer
+        self.fc1 = nn.Linear(9396, 1100)  # 8 features, 16 neurons in first hidden layer
+        self.fc2 = nn.Linear(16, 1500) # 16 neurons in second hidden layer
+        self.output = nn.Linear(18, 1) # Output layer
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -16,10 +17,10 @@ class SimpleANN(nn.Module):
         x = torch.sigmoid(self.output(x))
         return x
 
-train_df_X = pd.read_csv('data/processed/train_input_games_2022.csv')
-train_df_Y = pd.read_csv('data/processed/train_output_games_2022.csv')
-test_df_X = pd.read_csv('data/processed/test_input_games_2022.csv')
-test_df_Y = pd.read_csv('data/processed/test_output_games_2022.csv')
+train_df_X = pd.read_csv('data/processed/train_input_games_2022.csv').values.astype('float')
+train_df_Y = pd.read_csv('data/processed/train_output_games_2022.csv').values.astype('float')
+test_df_X = pd.read_csv('data/processed/test_input_games_2022.csv').values.astype('float')
+test_df_Y = pd.read_csv('data/processed/test_output_games_2022.csv').values.astype('float')
 
 # Example usage
 input_size = train_df_X.shape[1]  # For example, if input is flattened MNIST image
@@ -29,7 +30,7 @@ learning_rate = 0.001
 num_epochs = 5
 
 # Create an instance of the network
-net = SimpleANN(input_size, hidden_size, num_classes)
+net = SimpleANN()
 
 criterion = nn.BCELoss() # Binary Cross Entropy Loss
 optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
