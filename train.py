@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import pandas as pd
 from alive_progress import alive_bar
+from datetime import datetime
 
 class SimpleANN(nn.Module):
     def __init__(self):
@@ -39,7 +40,7 @@ net = SimpleANN()
 criterion = nn.BCELoss() # Binary Cross Entropy Loss
 optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
 
-epochs = 2
+epochs = 100
 print("Starting training with " + str(epochs) + " epochs")
 with alive_bar(epochs) as bar:
     for epoch in range(epochs):
@@ -71,3 +72,6 @@ with torch.no_grad():
     # Calculate accuracy correctly
     acc = (y_predicted_cls == test_labels).float().mean()
     print(f'Accuracy: {acc:.4f}')
+
+print('Exporting Trained Model...')
+torch.save(net.state_dict(), f'model/trained-{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}-2022-games.pt')
