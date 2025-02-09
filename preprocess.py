@@ -2,6 +2,31 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 
+def copy_missing_columns(df_to_update, df_source):
+    """
+    Copies missing columns from df_source to df_to_update, maintaining the column order of df_source.
+
+    Args:
+        df_to_update (pd.DataFrame): The DataFrame to which missing columns will be added.
+        df_source (pd.DataFrame): The DataFrame from which missing columns will be copied.
+
+    Returns:
+        pd.DataFrame: The updated DataFrame with missing columns added.
+    """
+    source_cols = df_source.columns.tolist()
+    target_cols = df_to_update.columns.tolist()
+
+    missing_cols = [col for col in source_cols if col not in target_cols]
+
+    for col in missing_cols:
+      df_to_update[col] = pd.Series(dtype=df_source[col].dtype)
+
+    # Reorder columns to match df_source
+    all_cols = target_cols + missing_cols
+    df_updated = df_to_update[source_cols]
+      
+    return df_updated
+
 print("Opening Dataset...")
 df = pd.read_csv('data/games_2022.csv')
 print("Found " + str(len(df)) + " datapoints!")
@@ -59,6 +84,9 @@ input_train_df_norm.insert(2, 'opponent_team', train_names_df['opponent_team'])
 input_test_df_norm = pd.get_dummies(input_test_df_norm, columns=['team', 'opponent_team'])
 input_train_df_norm = pd.get_dummies(input_train_df_norm, columns=['team', 'opponent_team'])
 
+input_test_df_norm = copy_missing_columns(input_test_df_norm.copy(), input_train_df_norm)
+input_train_df_norm = copy_missing_columns(input_train_df_norm.copy(), input_test_df_norm)
+
 test_df.drop('team', axis=1, inplace=True)
 test_df.drop('game_date', axis=1, inplace=True)
 test_df.drop('game_id', axis=1, inplace=True)
@@ -94,6 +122,8 @@ output_train_df_norm.fillna(0, inplace=True)
 # output_train_df = train_df.drop('game_date', 'rest_days', 'travel_distance', 'home_away_NS', 'team', 'opponent_team', 'notD1_incomplete', 'tz_dif_H_E', 'prev_game_dist')
 
 print("[PHASE 4] Writing Data Files...")
+print(input_test_df_norm)
+print(input_train_df_norm)
 input_test_df_norm.to_csv('data/processed/test_input_games_2022.csv', index=False)
 input_train_df_norm.to_csv('data/processed/train_input_games_2022.csv', index=False)
 output_test_df_norm.to_csv('data/processed/test_output_games_2022.csv', index=False)

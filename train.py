@@ -8,7 +8,7 @@ from alive_progress import alive_bar
 class SimpleANN(nn.Module):
     def __init__(self):
         super(SimpleANN, self).__init__()
-        self.fc1 = nn.Linear(1102, 9396)  # 8 features, 16 neurons in first hidden layer
+        self.fc1 = nn.Linear(1096, 9396)  # 8 features, 16 neurons in first hidden layer
         self.fc2 = nn.Linear(9396, 1500) # 16 neurons in second hidden layer
         self.output = nn.Linear(1500, 18) # Output layer
 
@@ -64,5 +64,10 @@ with alive_bar(epochs) as bar:
 with torch.no_grad():
     y_predicted = net(torch.tensor(test_df_X, dtype=torch.float32))
     y_predicted_cls = y_predicted.round()
-    acc = y_predicted_cls.eq(torch.tensor(test_df_Y)).sum() / float(test_df_Y.shape[0])
+
+    # Ensure test_df_Y is a tensor of the correct dtype
+    test_labels = torch.tensor(test_df_Y, dtype=torch.float32)
+
+    # Calculate accuracy correctly
+    acc = (y_predicted_cls == test_labels).float().mean()
     print(f'Accuracy: {acc:.4f}')
