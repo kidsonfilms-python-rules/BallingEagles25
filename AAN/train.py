@@ -9,7 +9,7 @@ from datetime import datetime
 class SimpleANN(nn.Module):
     def __init__(self):
         super(SimpleANN, self).__init__()
-        self.fc1 = nn.Linear(1099, 200)  # 8 features, 16 neurons in first hidden layer
+        self.fc1 = nn.Linear(1107, 200)  # 8 features, 16 neurons in first hidden layer
         self.fc2 = nn.Linear(200, 100) # 16 neurons in second hidden layer
         self.output = nn.Linear(100, 1) # Output layer
 
