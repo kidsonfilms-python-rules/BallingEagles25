@@ -9,14 +9,15 @@ from datetime import datetime
 class SimpleANN(nn.Module):
     def __init__(self):
         super(SimpleANN, self).__init__()
-        self.fc1 = nn.Linear(1096, 9396)  # 8 features, 16 neurons in first hidden layer
-        self.fc2 = nn.Linear(9396, 1500) # 16 neurons in second hidden layer
-        self.output = nn.Linear(1500, 18) # Output layer
+        self.fc1 = nn.Linear(1099, 200)  # 8 features, 16 neurons in first hidden layer
+        self.fc2 = nn.Linear(200, 100) # 16 neurons in second hidden layer
+        self.output = nn.Linear(100, 1) # Output layer
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = torch.sigmoid(self.output(x))
+        x = F.sigmoid(self.output(x))
+        # print(x)
         return x
 
 print("Loading processed datasets...")
@@ -37,10 +38,18 @@ print("Creating Neural Network...")
 # Create an instance of the network
 net = SimpleANN()
 
+if torch.cuda.is_available():
+    print('Accelerating using CUDA!')
+    device = torch.device('cuda')
+else:
+    device = torch.device('cpu')
+
+net.to(device)
+
 criterion = nn.BCELoss() # Binary Cross Entropy Loss
 optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
 
-epochs = 100
+epochs = 600
 print("Starting training with " + str(epochs) + " epochs")
 with alive_bar(epochs) as bar:
     for epoch in range(epochs):
