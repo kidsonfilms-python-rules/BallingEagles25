@@ -87,8 +87,8 @@ input_train_df_norm = pd.get_dummies(input_train_df_norm, columns=['team', 'oppo
 input_test_df_norm = copy_missing_columns(input_test_df_norm.copy(), input_train_df_norm)
 input_train_df_norm = copy_missing_columns(input_train_df_norm.copy(), input_test_df_norm)
 
-output_test_df = pd.DataFrame({"WL": test_df["team_score"] >= test_df["opponent_team_score"]})
-output_train_df = pd.DataFrame({"WL": train_df["team_score"] >= train_df["opponent_team_score"]})
+output_test_df = pd.DataFrame({"WL": test_df["team_score"] > test_df["opponent_team_score"], "T": test_df["team_score"] == test_df["opponent_team_score"]})
+output_train_df = pd.DataFrame({"WL": train_df["team_score"] > train_df["opponent_team_score"], "T": train_df["team_score"] == train_df["opponent_team_score"]})
 
 input_test_df_norm.fillna(0, inplace=True)
 input_train_df_norm.fillna(0, inplace=True)
