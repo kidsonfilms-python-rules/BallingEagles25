@@ -9,7 +9,7 @@ from datetime import datetime
 class SimpleANN(nn.Module):
     def __init__(self):
         super(SimpleANN, self).__init__()
-        self.fc1 = nn.Linear(1103, 200)  # 8 features, 16 neurons in first hidden layer
+        self.fc1 = nn.Linear(1131, 200)  # 8 features, 16 neurons in first hidden layer
         self.fc2 = nn.Linear(200, 150) # 16 neurons in second hidden layer
         self.output = nn.Linear(150, 2) # Output layer
 
@@ -49,7 +49,7 @@ net.to(device)
 criterion = nn.BCELoss() # Binary Cross Entropy Loss
 optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
 
-epochs = 600
+epochs = 400
 print("Starting training with " + str(epochs) + " epochs")
 with alive_bar(epochs) as bar:
     for epoch in range(epochs):
